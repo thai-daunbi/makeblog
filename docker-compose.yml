@@ -1,7 +1,8 @@
 services:
+
   nginx:
     build: _docker/nginx
-    container_name: leothai_nginx
+    container_name: laravel_nginx
     command: nginx -g "daemon off;"
     links:
       - php
@@ -11,10 +12,12 @@ services:
       - ./laravel/public:/var/www/html/laravel/public
   php:
     build: _docker/php
-    container_name: leothai_php
+    container_name: laravel_php
     volumes:
       - .:/var/www/html
+      - ./_docker/php/php.ini:/usr/local/etc/php/php.ini:cached
     working_dir: /var/www/html/laravel/public
+
     command: php-fpm
     links:
       - db
@@ -24,7 +27,7 @@ services:
     environment:
       APP_ENV: local
       APP_DEBUG: 'true'
-      APP_KEY: ${APP_KEY}
+      APP_KEY: SomeRandomKey!!!
       APP_LOCALE: en
       APP_FALLBACK_LOCALE: en
       DB_CONNECTION: mysql
@@ -32,11 +35,10 @@ services:
       DB_DATABASE: ${DB_DATABASE}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
-      MEMCACHED_HOST: cache
       CACHE_DRIVER: memcached
   db:
     image: mysql:8
-    container_name: leothai_mysql
+    container_name: laravel_db
     command: --default-authentication-plugin=mysql_native_password # needed as of mysql 8
     ports:
       - "3306:3306"
@@ -47,10 +49,10 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
   cache:
     image: memcached:1.6-alpine
-    container_name: leothai_cache
-  phpmyadmin:
+    container_name: laravel_cache
+  pma-leothai:
     image: phpmyadmin:latest
-    container_name: leothai_phpmyadmin
+    container_name: laravel_pma-leothai
     restart: unless-stopped
     tty: true
     environment:
