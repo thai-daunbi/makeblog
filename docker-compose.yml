@@ -1,0 +1,62 @@
+services:
+  nginx:
+    build: _docker/nginx
+    container_name: leothai_nginx
+    command: nginx -g "daemon off;"
+    links:
+      - php
+    ports:
+      - "8090:80"
+    volumes:
+      - ./laravel/public:/var/www/html/laravel/public
+  php:
+    build: _docker/php
+    container_name: leothai_php
+    volumes:
+      - .:/var/www/html
+    working_dir: /var/www/html/laravel/public
+    command: php-fpm
+    links:
+      - db
+      - cache
+    ports:
+      - "9000:9000"
+    environment:
+      APP_ENV: local
+      APP_DEBUG: 'true'
+      APP_KEY: ${APP_KEY}
+      APP_LOCALE: en
+      APP_FALLBACK_LOCALE: en
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      MEMCACHED_HOST: cache
+      CACHE_DRIVER: memcached
+  db:
+    image: mysql:8
+    container_name: leothai_mysql
+    command: --default-authentication-plugin=mysql_native_password # needed as of mysql 8
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USERNAME}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+  cache:
+    image: memcached:1.6-alpine
+    container_name: leothai_cache
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: leothai_phpmyadmin
+    restart: unless-stopped
+    tty: true
+    environment:
+      # PMA_ARBITRARY: 1
+      PMA_HOST: db
+    ports:
+      - "8091:80"
+    links:
+      - db
