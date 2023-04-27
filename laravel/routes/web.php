@@ -1,36 +1,30 @@
 <?php
-use Illuminate\Support\Facades\Route;
 
-/** @var \Laravel\Lumen\Routing\Router $router */
-
-/*
-|--------------------------------------------------------------------------
-| Application Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register all of the routes for an application.
-| It is a breeze. Simply tell Lumen the URIs it should respond to
-| and give it the Closure to call when that URI is requested.
-|
-*/
+// landing page
 Route::get('/', function () {
-    return app()->version();
+    return view('welcome');
 });
 
-$router->group(['prefix' => 'api/'], function () use ($router) {
-    $router->get('getUser', 'UserController@index');
-    $router->post('user', 'UserController@store');
-    $router->get('getUser/{id}', 'UserController@show');
-    $router->patch('getUser/{id}', 'UserController@update');
-    $router->delete('getUser/{id}', 'UserController@destroy');
+// authentication routes - php artisan make:auth generates it
+Auth::routes();
+
+// group the following routes by auth middleware - you have to be signed-in to proceeed
+Route::group(['middleware' => 'auth'], function() {
+	// Dashboard
+	Route::get('/home', 'HomeController@index')->name('home');
+
+	// Posts resourcfull controllers routes
+	Route::resource('posts', 'PostController');
+
+	// Comments routes
+	Route::group(['prefix' => '/comments', 'as' => 'comments.'], function() {
+        // store comment route
+		Route::post('/{post}', 'CommentController@store')->name('store');
+	});
+
+	// Replies routes
+	Route::group(['prefix' => '/replies', 'as' => 'replies.'], function() {
+        // store reply route
+		Route::post('/{comment}', 'ReplyController@store')->name('store');
+	});
 });
-
-// Route::group(['prefix' => 'api'], function () {
-//     // api.php 파일의 모든 라우트를 추가합니다.
-//     require base_path('routes/api.php');
-// });
-
-// // 나머지 웹 애플리케이션 라우트를 추가합니다.
-// Route::get('/', function () {
-//     return view('welcome');
-// });
