@@ -1,30 +1,33 @@
 <?php
 
-// landing page
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ReplyController;
+
 Route::get('/', function () {
     return view('welcome');
 });
 
-// authentication routes - php artisan make:auth generates it
 Auth::routes();
 
-// group the following routes by auth middleware - you have to be signed-in to proceeed
-Route::group(['middleware' => 'auth'], function() {
-	// Dashboard
-	Route::get('/home', 'HomeController@index')->name('home');
+Route::middleware(['auth'])->group(function () {
+    // Dashboard
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-	// Posts resourcfull controllers routes
-	Route::resource('posts', 'PostController');
+    // Posts resourceful controller routes
+    Route::resource('posts', PostController::class);
 
-	// Comments routes
-	Route::group(['prefix' => '/comments', 'as' => 'comments.'], function() {
+    // Comments routes
+    Route::prefix('/comments')->as('comments.')->group(function () {
         // store comment route
-		Route::post('/{post}', 'CommentController@store')->name('store');
-	});
+        Route::post('/{post}', [CommentController::class, 'store'])->name('store');
+    });
 
-	// Replies routes
-	Route::group(['prefix' => '/replies', 'as' => 'replies.'], function() {
+    // Replies routes
+    Route::prefix('/replies')->as('replies.')->group(function () {
         // store reply route
-		Route::post('/{comment}', 'ReplyController@store')->name('store');
-	});
+        Route::post('/{comment}', [ReplyController::class, 'store'])->name('store');
+    });
 });
