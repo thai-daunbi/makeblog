@@ -146,18 +146,18 @@ class PostController extends Controller
     }
     public function fetchLike(Request $request)
     {
-        $blog = Blog::find($request->blog);
+        $post = Post::find($request->post);
         return response()->json([
-            'blog' => $blog,
+            'post' => $post,
         ]);
     }
  
     public function handleLike(Request $request)
     {
-        $blog = Blog::find($request->blog);
-        $value = $blog->like;
-        $blog->like = $value+1;
-        $blog->save();
+        $post = Post::find($request->post);
+        $value = $post->like;
+        $post->like = $value+1;
+        $post->save();
         return response()->json([
             'message' => 'Liked',
         ]);
@@ -165,18 +165,18 @@ class PostController extends Controller
  
     public function fetchDislike(Request $request)
     {
-        $blog = Blog::find($request->blog);
+        $post = Post::find($request->post);
         return response()->json([
-            'blog' => $blog,
+            'post' => $post,
         ]);
     }
  
     public function handleDislike(Request $request)
     {
-        $blog = Blog::find($request->blog);
-        $value = $blog->dislike;
-        $blog->dislike = $value+1;
-        $blog->save();
+        $post = Post::find($request->post);
+        $value = $post->dislike;
+        $post->dislike = $value+1;
+        $post->save();
         return response()->json([
             'message' => 'Disliked',
         ]);

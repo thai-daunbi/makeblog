@@ -13,11 +13,6 @@ class Post extends Model
     // columns to be allowed in mass-assingment 
     protected $fillable = ['user_id', 'title', 'body', 'image'];
 
-    public function getRouteKeyName()
-    {
-        return 'post_slug';
-    }  
-
     /* Relations */
 
     // One to many inverse relationship with User model

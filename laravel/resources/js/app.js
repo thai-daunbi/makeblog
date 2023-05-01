@@ -6,6 +6,19 @@
 
 import './bootstrap';
 import { createApp } from 'vue';
+import LikeComponent from './components/LikeComponent.vue';
+import DislikeComponent from './components/DislikeComponent.vue';
+
+createApp({
+    components: {
+        LikeComponent,
+        DislikeComponent,
+    }
+}).mount('#app');
+
+Vue.component('like-component', require('./components/LikeComponent.vue').default);
+Vue.component('dislike-component', require('./components/DislikeComponent.vue').default);
+
 
 /**
  * Next, we will create a fresh Vue application instance. You may then begin
