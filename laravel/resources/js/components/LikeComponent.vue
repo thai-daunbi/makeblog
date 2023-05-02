@@ -8,36 +8,54 @@
     </div>
 </template>
 <script>
-    export default {
-        props: ['post'],
-        data() {
-            return {
-                alllikes: '',
-            }
-        },
-        methods: {
-            likeBlog() {
-                axios.post('/like/' + this.post, {
-                        post: this.post
-                    })
-                    .then(res => {
-                        this.renderLike()
-                        $('#success').html(res.data.message)
-                    })
-                    .catch()
-            },
-            renderLike() {
-                axios.post('/like', {
-                        post: this.post
-                    })
-                    .then(res => {
-                        console.log(res.data.post.like)
-                        this.alllikes = res.data.post.like
-                    })
-            }
-        },
-        mounted() {
-            this.renderLike()
+import axios from "axios";
+
+export default {
+    props: ['blog'],
+    data() {
+        return {
+            alllikes: '',
         }
+    },
+    methods: {
+        likeBlog() {
+        axios.post('/like', {
+        post_id: this.blog.id // post_id 변수 추가
+        })
+        .then(res => {
+        this.renderLike();
+        $('#success').html(res.data.message);
+        })
+        .catch(error => {
+        console.log(error.response.data);
+        });
+        },
+        renderLike() {
+        axios.post('/like', {
+        post_id: this.blog.id // post_id 변수 추가
+        })
+        .then(res => {
+        if (res && res.data && res.data.like) {
+        console.log(res.data.like);
+        this.alllikes = res.data.like;
+        } else {
+        throw new Error('Invalid response data');
+        }
+
+        })
+        .catch(error => {
+            if (error.response) {
+                console.log(error.response.data);
+            } else {
+                console.log(error.message);
+            }
+        });
+        }
+
+
+    },
+    mounted() {
+        this.renderLike()
     }
+};
 </script>

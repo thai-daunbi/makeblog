@@ -9,12 +9,10 @@ import { createApp } from 'vue';
 import LikeComponent from './components/LikeComponent.vue';
 import DislikeComponent from './components/DislikeComponent.vue';
 
-createApp({
-    components: {
-        LikeComponent,
-        DislikeComponent,
-    }
-}).mount('#app');
+const app = createApp({});
+app.component('like-component', LikeComponent);
+app.component('dislike-component', DislikeComponent);
+app.mount('#app');
 
 Vue.component('like-component', require('./components/LikeComponent.vue').default);
 Vue.component('dislike-component', require('./components/DislikeComponent.vue').default);
@@ -26,7 +24,6 @@ Vue.component('dislike-component', require('./components/DislikeComponent.vue').
  * to use in your application's views. An example is included for you.
  */
 
-const app = createApp({});
 
 import ExampleComponent from './components/ExampleComponent.vue';
 app.component('example-component', ExampleComponent);

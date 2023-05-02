@@ -14,9 +14,8 @@
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
 
     <!-- Scripts -->
-    @vite(['resources/sass/app.scss', 'resources/js/app.js', 'resources/css/layout.css'])
+    @vite(['resources/sass/app.scss', 'resources/js/app.js', 'resources/css/layout.css', 'resources/js/vue.min.js'])
     <script src="https://kit.fontawesome.com/6478f529f2.js" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
 </head>
 <body>
