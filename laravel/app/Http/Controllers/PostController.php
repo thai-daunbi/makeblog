@@ -144,31 +144,31 @@ class PostController extends Controller
     {
         //
     }
-    public function fetchLike(Post $post)
-    {
-        return response()->json([
-            'like' => $post->like,
-        ]);
-    }
+    // public function fetchLike(Post $post)
+    // {
+    //     return response()->json([
+    //         'like' => $post->like,
+    //     ]);
+    // }
     
 
 
-    // public function fetchLike(Post $post)
-    // {
-    //     $post = Post::find($post->posts);
-    //     return response()->json([
-    //         'post' => $post,
-    //     ]);
-    // }
+    public function fetchLike(Post $post)
+    {
+        $post = Post::find($post->posts);
+        return response()->json([
+            'post' => $post,
+        ]);
+    }
  
     public function handleLike(Post $post)
     {
-        $post = Post::find($post->post);
         $value = $post->like;
-        $post->like = $value+1;
+        $post->like = $value + 1;
         $post->save();
         return response()->json([
             'message' => 'Liked',
+            'like' => $post->like,
         ]);
     }    
  

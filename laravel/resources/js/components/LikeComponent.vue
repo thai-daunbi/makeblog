@@ -19,43 +19,39 @@ export default {
     },
     methods: {
         likeBlog() {
-        axios.post('/like', {
-        post_id: this.blog.id // post_id 변수 추가
-        })
-        .then(res => {
-        this.renderLike();
-        $('#success').html(res.data.message);
-        })
-        .catch(error => {
-        console.log(error.response.data);
-        });
+            axios.post('/like', { post_id: this.blog.id })
+            .then(res => {
+                $('#success').html(res.data.message);
+                this.alllikes = res.data.like;
+            })
+            .catch(error => {
+                console.log(error.message);
+            });
         },
         renderLike() {
-        axios.post('/like', {
-        post_id: this.blog.id // post_id 변수 추가
-        })
-        .then(res => {
-        if (res && res.data && res.data.like) {
-        console.log(res.data.like);
-        this.alllikes = res.data.like;
-        } else {
-        throw new Error('Invalid response data');
+            axios.post('/like', { post_id: this.blog.id })
+                .then(res => {
+                console.log(res); // res 객체를 콘솔에 출력
+                if (res && res.data && res.data.like) {
+                    console.log(res.data.like);
+                    this.alllikes = res.data.like;
+                } else {
+                    throw new Error('Invalid response data');
+                }
+                })
+                .catch(error => {
+                if (error.response) {
+                    console.log(error.response.data);
+                } else {
+                    console.log(error.message);
+                }
+                }); 
         }
 
-        })
-        .catch(error => {
-            if (error.response) {
-                console.log(error.response.data);
-            } else {
-                console.log(error.message);
-            }
-        });
+        },
+        mounted() {
+        this.renderLike();
         }
 
-
-    },
-    mounted() {
-        this.renderLike()
-    }
 };
 </script>

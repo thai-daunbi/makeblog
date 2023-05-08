@@ -9,13 +9,25 @@ import { createApp } from 'vue';
 import LikeComponent from './components/LikeComponent.vue';
 import DislikeComponent from './components/DislikeComponent.vue';
 
-const app = createApp({});
+const app = createApp({
+    // 데이터와 메서드를 정의합니다.
+    // data() {
+    //   return {
+    //     message: 'Hello, Vue!'
+    //   }
+    // },
+    // methods: {
+    //   greet() {
+    //     alert(this.message);
+    //   }
+    // }
+  })
+
 app.component('like-component', LikeComponent);
 app.component('dislike-component', DislikeComponent);
-app.mount('#app');
 
-Vue.component('like-component', require('./components/LikeComponent.vue').default);
-Vue.component('dislike-component', require('./components/DislikeComponent.vue').default);
+// Vue.component('like-component', require('./components/LikeComponent.vue').default);
+// Vue.component('dislike-component', require('./components/DislikeComponent.vue').default);
 
 
 /**

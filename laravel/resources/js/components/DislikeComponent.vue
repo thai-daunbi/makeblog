@@ -20,6 +20,8 @@ export default {
   },
   methods: {
     renderDislike() {
+      if (!this.post) return;
+      const post_id = this.post.id;
       axios
         .get(`/api/post/${this.post.id}/dislike`)
         .then((res) => {
