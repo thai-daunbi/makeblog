@@ -22,8 +22,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/like', [PostController::class, 'fetchLike']);
-Route::post('/like/{id}', [PostController::class, 'handleLike']);
+// Route::post('/like', [PostController::class, 'fetchLike']);
+// Route::post('/like/{id}', [PostController::class, 'handleLike']);
 
-Route::post('/dislike', [PostController::class, 'fetchDislike']);
-Route::post('/dislike/{id}', [PostController::class, 'handleDislike']);
+// Route::post('/dislike', [PostController::class, 'fetchDislike']);
+// Route::post('/dislike/{id}', [PostController::class, 'handleDislike']);
