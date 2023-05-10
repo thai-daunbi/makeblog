@@ -10,73 +10,38 @@
 </template>
 <script>
 import axios from "axios";
-
-export default {
-  props: ["post"],
-  data() {
-    return {
-      alldislikes: null,
-    };
-  },
-  methods: {
-    renderDislike() {
-      if (!this.post) return;
-      const post_id = this.post.id;
-      axios
-        .get(`/api/post/${this.post.id}/dislike`)
-        .then((res) => {
-          console.log(res.data.post.dislike);
-          this.alldislikes = res.data.post.dislike || 0;
-        })
-        .catch((err) => console.log(err.response.data));
-    },
-    dislike() {
-      axios
-        .post(`/api/post/${this.post.id}/dislike`)
-        .then((res) => {
-          console.log(res.data.post.dislike);
-          this.alldislikes = res.data.post.dislike;
-        })
-        .catch((err) => console.log(err.response.data));
-    },
-  },
-  mounted() {
-    this.renderDislike();
-  },
-};
+  export default {
+      props:['blog'],
+      data(){
+          return {
+              alldislike:'',
+          }
+      },
+      methods:{
+          dislikeBlog(){
+              axios.post('/dislike/'+this.blog, {post: this.blog})
+              .then(res =>{
+                this.alldislike = parseInt(this.alldislike) + 1;
+                $('#success').html(res.data.message)
+              })
+              .catch(error => {
+                    console.log(error.message);
+                })
+          },
+          renderDislike(){
+            axios.post('/dislike', {post:this.blog})
+            .then(res =>{
+              if (res.data.post === null) {
+                // 처리할 코드 추가
+                console.log("post is null");
+                return;
+              }
+              this.alldislike = res.data.post.dislike;
+            })
+          }
+      },
+      mounted() {
+          this.renderDislike()
+      }
+  }
 </script>
-
-<!-- <script>
-    export default {
-        props:['post'],
-        data(){
-            return {
-                allDislike:'',
-            }
-        },
-        methods:{
-            dislikeBlog(){
-                axios.post('/dislike/'+this.post, {post: this.post})
-                .then(res =>{
-                    this.renderDislike()
-                    $('#success').html(res.data.message)
-                })
-                .catch()
-            },
-            renderDislike(){
-                axios.post('/dislike', {post:this.post})
-                .then(res => {
-                    console.log(res.data.post.dislike);
-                    this.allDislike = res.data.post.dislike || 0; // null이면 0으로 초기화
-                })
-                // .then(res =>{
-                //     console.log(res.data.post.dislike)
-                //     this.allDislike = res.data.post.dislike
-                // })
-            }
-        },
-        mounted() {
-            this.renderDislike()
-        }
-    }
-</script> -->

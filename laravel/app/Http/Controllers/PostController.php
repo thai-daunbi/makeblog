@@ -153,36 +153,35 @@ class PostController extends Controller
     
 
 
-    public function fetchLike(Post $post)
+    public function fetchLike(Request $request)
     {
-        $post = Post::find($post->posts);
+        $post = Post::find($request->post);
         return response()->json([
             'post' => $post,
         ]);
     }
  
-    public function handleLike(Post $post)
-    {
+    public function handleLike(Request $request)
+    {   
+        $post = Post::find($request->post);
         $value = $post->like;
-        $post->like = $value + 1;
+        $post->like = $value+1;
         $post->save();
         return response()->json([
             'message' => 'Liked',
-            'like' => $post->like,
         ]);
-    }    
- 
-    public function fetchDislike(Post $post)
+    }
+    public function fetchDislike(Request $request)
     {
-        $post = Post::find($post->post);
+        $post = Post::find($request->post);
         return response()->json([
             'post' => $post,
         ]);
     }
  
-    public function handleDislike(Post $post)
+    public function handleDislike(Request $request)
     {
-        $post = Post::find($post->post);
+        $post = Post::find($request->post);
         $value = $post->dislike;
         $post->dislike = $value+1;
         $post->save();

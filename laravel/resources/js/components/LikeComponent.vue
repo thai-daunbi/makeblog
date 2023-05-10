@@ -9,49 +9,45 @@
 </template>
 <script>
 import axios from "axios";
-
-export default {
-    props: ['blog'],
-    data() {
-        return {
-            alllikes: '',
-        }
-    },
-    methods: {
-        likeBlog() {
-            axios.post('/like', { post_id: this.blog.id })
-            .then(res => {
-                $('#success').html(res.data.message);
-                this.alllikes = res.data.like;
-            })
-            .catch(error => {
-                console.log(error.message);
-            });
+    export default {
+        props: ['blog'],
+        data() {
+            return {
+                alllikes: '',
+            }
         },
-        renderLike() {
-            axios.post('/like', { post_id: this.blog.id })
-                .then(res => {
-                console.log(res); // res 객체를 콘솔에 출력
-                if (res && res.data && res.data.like) {
-                    console.log(res.data.like);
-                    this.alllikes = res.data.like;
-                } else {
-                    throw new Error('Invalid response data');
-                }
-                })
-                .catch(error => {
-                if (error.response) {
-                    console.log(error.response.data);
-                } else {
-                    console.log(error.message);
-                }
-                }); 
-        }
+        methods: {
+            likeBlog() {
+                // console.log("//////////////////////////--------------------");
+                // console.log(this.blog);
 
+                axios.post('/like/' + this.blog, {
+                            post: this.blog
+                    })
+                    .then(res => {
+                        this.alllikes = parseInt(this.alllikes) + 1;
+                        $('#success').html(res.data.message);
+                    })
+                .catch(error => {
+                    console.log(error.message);
+                });
+            },
+            renderLike() {
+                // console.log(this.blog);
+                axios.post('/like', { post: this.blog })
+                .then(res => {
+                    if (res.data.post === null) {
+                // 처리할 코드 추가
+                console.log("post is null");
+                return;
+            }
+            this.alllikes = res.data.post.like;
+                })
+            }
         },
         mounted() {
-        this.renderLike();
+            this.renderLike()
         }
 
-};
+    };
 </script>
