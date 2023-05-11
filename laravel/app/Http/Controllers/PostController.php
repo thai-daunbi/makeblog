@@ -162,15 +162,42 @@ class PostController extends Controller
     }
  
     public function handleLike(Request $request)
-    {   
-        $post = Post::find($request->post);
-        $value = $post->like;
-        $post->like = $value+1;
-        $post->save();
-        return response()->json([
-            'message' => 'Liked',
+{
+    $postId = $request->post;
+    $userId = auth()->id();
+    error_log($postId);
+    exit;
+    $post = Post::find($postId);
+    $likeControl = LikeControl::where('like_user_id', $userId)
+        ->where('like_post_id', $postId)
+        ->first();
+
+    // 좋아요 추가
+    if (!$likeControl) {
+        LikeControl::create([
+            'like_user_id' => $userId,
+            'like_post_id' => $postId,
         ]);
+
+        $post->like += 1;
+
+        $message = 'Liked';
     }
+    // 좋아요 취소
+    else {
+        $likeControl->delete();
+
+        $post->like -= 1;
+
+        $message = 'Unliked';
+    }
+
+    $post->save();
+
+    return response()->json([
+        'message' => $message,
+    ]);
+}
     public function fetchDislike(Request $request)
     {
         $post = Post::find($request->post);
