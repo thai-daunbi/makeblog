@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\LikeControl;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -162,42 +163,50 @@ class PostController extends Controller
     }
  
     public function handleLike(Request $request)
-{
-    $postId = $request->post;
-    $userId = auth()->id();
-    error_log($postId);
-    exit;
-    $post = Post::find($postId);
-    $likeControl = LikeControl::where('like_user_id', $userId)
-        ->where('like_post_id', $postId)
-        ->first();
+    {
+        try {
+            $postId = $request->post;
+        $userId = auth()->id();
+        
+        $post = Post::find($postId);
+        //값 찾는 코
+        $likeControl = LikeControl::where('like_user_id', $userId)
+            ->where('like_post_id', $postId)
+            ->first();
+            
+		$value = $post->like;
+        if (!$likeControl) {
+            LikeControl::create([
+                'like_user_id' => $userId,
+                'like_post_id' => $postId,
+            ]);
 
-    // 좋아요 추가
-    if (!$likeControl) {
-        LikeControl::create([
-            'like_user_id' => $userId,
-            'like_post_id' => $postId,
+        
+        $post->like = $value+1;
+
+            $message = 'Liked';
+        }
+        else {
+            $likeControl->delete();
+
+            $post->like = $value-1;
+
+            $message = 'Unliked';
+        }
+
+        $post->save();
+
+        return response()->json([
+            'message' => $message,
         ]);
-
-        $post->like += 1;
-
-        $message = 'Liked';
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Internal Server Error',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+        
     }
-    // 좋아요 취소
-    else {
-        $likeControl->delete();
-
-        $post->like -= 1;
-
-        $message = 'Unliked';
-    }
-
-    $post->save();
-
-    return response()->json([
-        'message' => $message,
-    ]);
-}
     public function fetchDislike(Request $request)
     {
         $post = Post::find($request->post);

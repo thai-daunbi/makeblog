@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class LikeControl extends Model
 {
     use HasFactory;
-    protected $table = 'posts';
+    protected $table = 'like_control';
 
     // columns to be allowed in mass-assingment 
     protected $fillable = ['like_user_id', 'like_post_id'];
