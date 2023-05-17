@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('like_control', function (Blueprint $table) {
+        Schema::create('like_controls', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('like_user_id');
             $table->unsignedBigInteger('like_post_id');
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('like_control');
+        Schema::dropIfExists('like_controls');
     }
 };
