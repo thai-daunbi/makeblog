@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\LikeControl;
+use App\Models\DislikeControl;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -166,39 +167,39 @@ class PostController extends Controller
     {
         try {
             $postId = $request->post;
-        $userId = auth()->id();
-        
-        $post = Post::find($postId);
-        //값 찾는 코
-        $likeControl = LikeControl::where('like_user_id', $userId)
-            ->where('like_post_id', $postId)
-            ->first();
+            $userId = auth()->id();
             
-		$value = $post->like;
-        if (!$likeControl) {
-            LikeControl::create([
-                'like_user_id' => $userId,
-                'like_post_id' => $postId,
+            $post = Post::find($postId);
+            //값 찾는 코드
+            $likeControl = LikeControl::where('like_user_id', $userId)
+                ->where('like_post_id', $postId)
+                ->first();
+                
+            $value = $post->like;
+            if (!$likeControl) {
+                LikeControl::create([
+                    'like_user_id' => $userId,
+                    'like_post_id' => $postId,
+                ]);
+
+            
+            $post->like = $value+1;
+
+                $message = 'Liked';
+            }
+            else {
+                $likeControl->delete();
+
+                $post->like = $value-1;
+
+                $message = 'Unliked';
+            }
+
+            $post->save();
+
+            return response()->json([
+                'message' => $message,
             ]);
-
-        
-        $post->like = $value+1;
-
-            $message = 'Liked';
-        }
-        else {
-            $likeControl->delete();
-
-            $post->like = $value-1;
-
-            $message = 'Unliked';
-        }
-
-        $post->save();
-
-        return response()->json([
-            'message' => $message,
-        ]);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Internal Server Error',
@@ -217,13 +218,44 @@ class PostController extends Controller
  
     public function handleDislike(Request $request)
     {
-        $post = Post::find($request->post);
-        $value = $post->dislike;
-        $post->dislike = $value+1;
-        $post->save();
-        return response()->json([
-            'message' => 'Disliked',
-        ]);
+    	try {
+	    	$postId = $request->post;
+		    $userId = auth()->id();
+		    
+	        $post = Post::find($postId);
+	 
+	        $dislikeControl = DislikeControl::where('dislike_user_id', $userId)
+		            ->where('dislike_post_id', $postId)
+		            ->first();
+	        $value = $post->dislike;
+	        if (!$dislikeControl) {
+		            DislikeControl::create([
+		                'dislike_user_id' => $userId,
+		                'dislike_post_id' => $postId,
+		            ]);
+		
+		        
+		        $post->dislike = $value+1;
+		
+		            $message = 'Disliked';
+		        }
+		        else {
+		            $dislikeControl->delete();
+		
+		            $post->dislike = $value-1;
+		
+		            $message = 'UnDisliked';
+		        }
+	        $post->save();
+	        return response()->json([
+	            'message' => $message,
+	        ]);
+		} catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Internal Server Error',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
     
 }
