@@ -146,13 +146,6 @@ class PostController extends Controller
     {
         //
     }
-    // public function fetchLike(Post $post)
-    // {
-    //     return response()->json([
-    //         'like' => $post->like,
-    //     ]);
-    // }
-    
 
 
     public function fetchLike(Request $request)
@@ -164,50 +157,57 @@ class PostController extends Controller
     }
  
     public function handleLike(Request $request)
-    {
-        try {
-            $postId = $request->post;
-            $userId = auth()->id();
+{
+    try {
+        $postId = $request->post;
+        $userId = auth()->id();
+
+        $post = Post::find($postId);
+
+        $likeControl = LikeControl::where('like_user_id', $userId)
+            ->where('like_post_id', $postId)
+            ->first();
             
-            $post = Post::find($postId);
-            //값 찾는 코드
-            $likeControl = LikeControl::where('like_user_id', $userId)
-                ->where('like_post_id', $postId)
-                ->first();
-                
-            $value = $post->like;
-            if (!$likeControl) {
-                LikeControl::create([
-                    'like_user_id' => $userId,
-                    'like_post_id' => $postId,
-                ]);
+        $dislikeControl = DislikeControl::where('dislike_user_id', $userId)
+            ->where('dislike_post_id', $postId)
+            ->first();
 
-            
-            $post->like = $value+1;
+        $message = '';
 
-                $message = 'Liked';
-            }
-            else {
-                $likeControl->delete();
-
-                $post->like = $value-1;
-
-                $message = 'Unliked';
-            }
-
-            $post->save();
-
-            return response()->json([
-                'message' => $message,
+        if (!$likeControl) {
+            LikeControl::create([
+                'like_user_id' => $userId,
+                'like_post_id' => $postId,
             ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Internal Server Error',
-                'error' => $e->getMessage(),
-            ], 500);
+
+            $post->like += 1;
+
+            // 싫어요 상태에서 좋아요 눌렀으므로 싫어요 취소
+            if ($dislikeControl) {
+                $dislikeControl->delete();
+                $post->dislike -= 1;
+            }
+
+            
         }
-        
+        else {
+            $likeControl->delete();
+            $post->like -= 1;
+            
+        }
+
+        $post->save();
+
+        return response()->json([
+            'message' => $message,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Internal Server Error',
+            'error' => $e->getMessage(),
+        ], 500);
     }
+}
     public function fetchDislike(Request $request)
     {
         $post = Post::find($request->post);
@@ -217,45 +217,53 @@ class PostController extends Controller
     }
  
     public function handleDislike(Request $request)
-    {
-    	try {
-	    	$postId = $request->post;
-		    $userId = auth()->id();
-		    
-	        $post = Post::find($postId);
-	 
-	        $dislikeControl = DislikeControl::where('dislike_user_id', $userId)
-		            ->where('dislike_post_id', $postId)
-		            ->first();
-	        $value = $post->dislike;
-	        if (!$dislikeControl) {
-		            DislikeControl::create([
-		                'dislike_user_id' => $userId,
-		                'dislike_post_id' => $postId,
-		            ]);
-		
-		        
-		        $post->dislike = $value+1;
-		
-		            $message = 'Disliked';
-		        }
-		        else {
-		            $dislikeControl->delete();
-		
-		            $post->dislike = $value-1;
-		
-		            $message = 'UnDisliked';
-		        }
-	        $post->save();
-	        return response()->json([
-	            'message' => $message,
-	        ]);
-		} catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Internal Server Error',
-                'error' => $e->getMessage(),
-            ], 500);
+{
+    try {
+        $postId = $request->post;
+        $userId = auth()->id();
+
+        $post = Post::find($postId);
+
+        $dislikeControl = DislikeControl::where('dislike_user_id', $userId)
+            ->where('dislike_post_id', $postId)
+            ->first();
+            
+        $likeControl = LikeControl::where('like_user_id', $userId)
+            ->where('like_post_id', $postId)
+            ->first();
+
+        $message = '';
+
+        if (!$dislikeControl) {
+            DislikeControl::create([
+                'dislike_user_id' => $userId,
+                'dislike_post_id' => $postId,
+            ]);
+
+            $post->dislike += 1;
+
+            // 좋아요 상태에서 싫어요 눌렀으므로 좋아요 취소
+            if ($likeControl) {
+                $likeControl->delete();
+                $post->like -= 1;
+            }
+
+            
         }
+        else {
+            $dislikeControl->delete();
+            $post->dislike -= 1;
+            
+        }
+
+        $post->save();
+
+       
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Internal Server Error',
+            'error' => $e->getMessage(),
+        ], 500);
     }
-    
+}
 }

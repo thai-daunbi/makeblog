@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div class="container">
       <div id="success" class="mb-3"></div>
       
@@ -7,7 +7,7 @@
          ({{ alldislike }})
      </a>
   </div>
-</template>
+</template> -->
 <script>
 import axios from "axios";
 export default {
