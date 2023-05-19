@@ -62,3 +62,14 @@ services:
       - "8091:80"
     links:
       - db
+
+  admin_nginx:
+    build: _docker/nginx
+    container_name: admin_nginx
+    command: nginx -g "daemon off;"
+    links:
+      - php
+    ports:
+      - "8092:80"
+    volumes:
+      - ./laravel/public:/var/www/html/admin/public
