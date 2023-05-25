@@ -1,0 +1,8 @@
+.post-item {
+    display: flex;
+    align-items: center;
+}
+
+.post-item > div {
+    margin-right: 10px;
+}
