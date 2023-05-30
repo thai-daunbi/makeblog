@@ -6,27 +6,36 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
-                <h1 class="page-header">Admin Settings</h1>
+                <h1 class="page-header">Admin Settings - User Management</h1>
             </div>
         </div>
 
-        <!-- 설정 정보 표시 영역 -->
+        <!-- 사용자 정보 표시 영역 -->
         <div class="row">
-            <div class="col-lg-6">
-                <div class="card">
-                    <div class="card-header">Setting A</div>
-                    <div class="card-body">
-                        <!-- Setting A 정보 표시 -->
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="card">
-                    <div class="card-header">Setting B</div>
-                    <div class="card-body">
-                        <!-- Setting B 정보 표시 -->
-                    </div>
-                </div>
+            <div class="col-lg-12">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($users as $user)
+                        <tr>
+                            <td>{{ $user->id }}</td>
+                            <td>{{ $user->name }}</td>
+                            <td>{{ $user->email }}</td>
+                            <td>
+                                <a href="{{ route('edit-user', $user->id) }}" class="btn btn-warning">Edit</a>
+                                <a href="{{ route('delete-user', $user->id) }}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

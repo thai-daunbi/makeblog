@@ -34,3 +34,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('admin/settings', [App\Http\Controllers\ProfileController::class, 'settings']);
 });
 
+Route::get('/admin/settings', [App\Http\Controllers\ProfileController::class, 'index']);
+Route::get('/admin/settings/edit-user/{id}', [App\Http\Controllers\ProfileController::class, 'editUser'])->name('edit-user');
+Route::get('/admin/settings/delete-user/{id}', [App\Http\Controllers\ProfileController::class, 'deleteUser'])->name('delete-user');
+
