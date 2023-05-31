@@ -17,7 +17,7 @@ class ProfileController extends Controller
     public function index()
     {
         $users = User::all();
-        return view('admin.settings', ['users' => $users]);
+        return view('settings', ['users' => $users]);
     }
 
     public function editUser($id)
@@ -28,11 +28,12 @@ class ProfileController extends Controller
     public function deleteUser($id)
     {
         $user = User::find($id);
-        if ($user) {
-            $user->delete();
-            return redirect('/admin/settings')->with('success', 'User deleted successfully');
-        }
-        
-        return redirect('/admin/settings')->with('error', 'User not found');
+
+        // Deactivate the user account
+        $user->deactivated = true;
+        $user->save();
+
+        return redirect()->route('admin-settings')
+                        ->with('success', 'User account has been deactivated');
     }
 }

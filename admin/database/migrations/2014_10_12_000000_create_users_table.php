@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+            $table->boolean('deactivated')->default(false); // 추가된 deactivated 열
         });
     }
 
