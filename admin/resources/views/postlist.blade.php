@@ -1,21 +1,33 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link href="{{ asset('resources/css/app.css') }}" rel="stylesheet">
+        @vite(['resources/css/app.css'])
     </head>
     <body>
-        <ul>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
             @foreach ($data as $item)
-                <li class="post-item">
-                    <div class="title">{{ Str::limit($item->title, 8) }}</div>
-                    <div class="author">{{ $item->user->name }}</div>
-                    <div class="date">{{ $item->created_at }}</div>
+            <tr>
+                <td>{{ $item->id }}</td>
+                <td>{{ Str::limit($item->title, 8) }}</td>
+                <td>{{ $item->user->name }}</td>
+                <td>
                     <button class="edit-btn">수정</button>
                     <button class="visibility-btn" onclick="setVisibility({{ $item->id }}, 'public')">{{ $item->is_public ? '공개' : '' }}</button>
                     <button class="visibility-btn" onclick="setVisibility({{ $item->id }}, 'private')">{{ !$item->is_public ? '비공개' : '' }}</button>
-                </li>
+                </td>
+            </tr>
             @endforeach
-        </ul>
+        </tbody>
+    </table>
 
         <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl5asciRoWLzomZR2l5lpt4yUvsnpjzgv7lzDAG0m" crossorigin="anonymous"></script>
 

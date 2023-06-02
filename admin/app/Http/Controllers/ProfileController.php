@@ -27,13 +27,9 @@ class ProfileController extends Controller
 
     public function deleteUser($id)
     {
-        $user = User::find($id);
+        $user = User::findOrFail($id);
+        $user->update(['deactivated' => true]);
+        return redirect()->back()->with('message', 'User account deactivated successfully.');
 
-        // Deactivate the user account
-        $user->deactivated = true;
-        $user->save();
-
-        return redirect()->route('admin-settings')
-                        ->with('success', 'User account has been deactivated');
     }
 }

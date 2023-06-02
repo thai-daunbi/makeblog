@@ -18,8 +18,8 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
-            $table->timestamps();
             $table->boolean('deactivated')->default(false); // 추가된 deactivated 열
+            $table->timestamps();
         });
     }
 
@@ -29,5 +29,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('users');
+        
     }
 };
