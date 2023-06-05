@@ -11,6 +11,12 @@ class PostList extends Model
 
     protected $table = 'posts';
 
+    protected $fillable = [
+        'title',
+        'body',
+        // 여기에 다른 fillable 속성이 있다면, 그것도 포함합니다.
+    ];
+
     public function user()
     {
         return $this->belongsTo('App\Models\User', 'user_id');
