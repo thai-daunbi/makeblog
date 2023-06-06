@@ -24,11 +24,10 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::get('/admin/pages', [App\Http\Controllers\PostlistController::class, 'index'])->name('postlist.index');
 Route::get('/posts/{post}/edit', [App\Http\Controllers\PostlistController::class, 'edit']);
 Route::put('/posts/{post}', [App\Http\Controllers\PostlistController::class, 'update']);
+Route::put('/posts/{postId}/visibility', [App\Http\Controllers\PostlistController::class,'updateVisibility']);
 
-// Route::middleware(['auth'])->group(function () {
-//     Route::get('user/edit', 'UserController@edit')->name('user.edit');
-//     Route::put('/user/{post}', 'UserController@update');
-// });
+
+
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::patch('user/{user}/toggle_activation', 'UserController@toggleActivation')->name('user.toggle_activation');
 });
