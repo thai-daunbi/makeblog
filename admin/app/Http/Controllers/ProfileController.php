@@ -16,20 +16,36 @@ class ProfileController extends Controller
 
     public function index()
     {
-        $users = User::all();
+        $users = User::all()->each(function ($user) {
+            if ($user->deactivated) {
+                $user->situation = '비공개';
+            } else {
+                $user->situation = '공개';
+            }
+        });
         return view('settings', ['users' => $users]);
     }
 
     public function editUser($id)
     {
-        //
+        return view('posts.edit', compact('post'));
     }
 
-    public function deleteUser($id)
+    public function deactivateUser($id)
     {
         $user = User::findOrFail($id);
-        $user->update(['deactivated' => true]);
+        $user->update(['deactivated' => 1]);
         return redirect()->back()->with('message', 'User account deactivated successfully.');
-
     }
+
+    public function activateUser($id)
+    {
+        $user = User::findOrFail($id);
+        $user->deactivated = false;
+        $user->save();
+
+        return redirect()->route('admin-settings')
+            ->with('user-activated', "User (ID: {$id}) has been activated.");
+    }
+
 }

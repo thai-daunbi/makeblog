@@ -20,6 +20,7 @@
                             <th>Name</th>
                             <th>Email</th>
                             <th>Actions</th>
+                            <th>situation</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -30,8 +31,14 @@
                             <td>{{ $user->email }}</td>
                             <td>
                                 <a href="{{ route('edit-user', $user->id) }}" class="btn btn-warning">Edit</a>
-                                <a href="{{ route('delete-user', $user->id) }}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
+                                @if ($user->deactivated)
+                                    <a href="{{ route('activate-user', $user->id) }}" class="btn btn-success">Activate</a>
+                                @else
+                                    <a href="{{ route('deactivate-user', $user->id) }}" class="btn btn-danger">Deactivate</a>
+                                @endif
                             </td>
+                            <td>{{ $user->situation }}</td>
+
                         </tr>
                         @endforeach
                     </tbody>
