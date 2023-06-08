@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\Hash;
 use App\Models\User;
-
 
 class ProfileController extends Controller
 {
@@ -17,35 +18,79 @@ class ProfileController extends Controller
     public function index()
     {
         $users = User::all()->each(function ($user) {
-            if ($user->deactivated) {
-                $user->situation = '비공개';
+            if (!$user->email_verified || $user->deactivated) {
+                $user->situation = '비활성화';
             } else {
-                $user->situation = '공개';
+                $user->situation = '활성화';
             }
         });
+
         return view('settings', ['users' => $users]);
     }
 
-    public function editUser($id)
+    public function editUser()
     {
-        return view('posts.edit', compact('post'));
+        $user = \Auth::user();
+        return view('users.edit',compact('user'));
     }
 
     public function deactivateUser($id)
     {
         $user = User::findOrFail($id);
-        $user->update(['deactivated' => 1]);
-        return redirect()->back()->with('message', 'User account deactivated successfully.');
+        $user->update(['deactivated' => 1, 'email_verified_at' => NULL]);
+        return redirect()->back()->with('message', '사용자 계정이 비활성화되고 이메일 인증이 취소었습니다.');
     }
 
     public function activateUser($id)
     {
         $user = User::findOrFail($id);
-        $user->deactivated = false;
+        $user->deactivated = 0; // Set the account to active
+        $user->email_at = now(); // Set the email verification date to now
         $user->save();
 
         return redirect()->route('admin-settings')
-            ->with('user-activated', "User (ID: {$id}) has been activated.");
+            ->with('user-activated', "User (ID: {$id}) has been 활성화되고 이메일 인증이 완료되었습니다.");
     }
 
+    public function accountInfoStore(Request $request)
+    {
+        $request->validateWithBag('account', [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', ':255', 'unique:users,email,'.\Auth::user()->id],
+        ]);
+        $user = \Auth::user()->update($request->except(['_token']));
+        if ($user) {
+ $message = "Account updated successfully.";
+        } else {
+            $message = "Error while saving. Please try again.";
+        }
+        return redirect()->route('edit-user')->with('account_message', $message);
+    }
+
+    public function changePasswordStore(Request $request)
+    {
+        $validator = \Validator::make($request->all(), [
+            'old_password' => ['required'],
+            'new_password' => ['required', Password::defaults()],
+            'confirm_password' => ['required', 'same:new_password', Password::defaults()],
+        ]);
+        $validator->after(function ($validator) use ($request) {
+            if ($validator->failed()) return;
+            if (!Hash::check($request->input('old_password'), \Auth::user()->password)) {
+                $validator->errors()->add(
+                    'old_password', 'Old password is incorrect.'
+                );
+            }
+        });
+        $validator->validateWithBag('password');
+        $user = \Auth::user()->update([
+            'password' => Hash::make($request->input('new_password')),
+        ]);
+        if ($user) {
+            $message = "Password updated successfully.";
+        } else {
+            $message = "Error while saving. Please try again.";
+        }
+        return redirect()->route('edit-user')->with('password_message', $message);
+    }
 }

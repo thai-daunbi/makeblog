@@ -40,7 +40,10 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('/admin/settings', [App\Http\Controllers\ProfileController::class, 'index']);
+//edit
 Route::get('/admin/settings/edit-user/{id}', [App\Http\Controllers\ProfileController::class, 'editUser'])->name('edit-user');
+Route::post('edit-account-info',  [App\Http\Controllers\ProfileController::class,'accountInfoStore'])->name('admin.account.info.store');
+Route::post('change-password',  [App\Http\Controllers\ProfileController::class,'changePasswordStore'])->name('admin.account.password.store');
 // Route::get('/admin/settings/delete-user/{id}', [App\Http\Controllers\ProfileController::class, 'deleteUser'])->name('delete-user');
 Route::get('/deactivate-user/{id}', [App\Http\Controllers\ProfileController::class, 'deactivateUser'])->name('deactivate-user');
 Route::get('/activate-user/{id/activate}', [App\Http\Controllers\ProfileController::class, 'activateUser'])->name('activate-user');
