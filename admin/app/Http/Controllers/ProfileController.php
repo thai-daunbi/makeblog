@@ -19,9 +19,9 @@ class ProfileController extends Controller
     {
         $users = User::all()->each(function ($user) {
             if (!$user->email_verified || $user->situation) {
-                $user->situation = '비활성화';
-            } else {
                 $user->situation = '활성화';
+            } else {
+                $user->situation = '비활성화';
             }
         });
 
@@ -45,7 +45,7 @@ class ProfileController extends Controller
     {
         $user = User::findOrFail($id);
         $user->situation = 0; // Set the account to active
-        $user->email_at = now(); // Set the email verification date to now
+        $user->email_verified_at = now(); // Set the email verification date to now
         $user->save();
 
         return redirect()->route('admin-settings')

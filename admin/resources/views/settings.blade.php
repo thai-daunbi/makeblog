@@ -31,10 +31,11 @@
                             <td>{{ $user->email }}</td>
                             <td>
                                 <a href="{{ route('edit-user', $user->id) }}" class="btn btn-warning">Edit</a>
-                                @if ($user->situation)
-                                    <a href="{{ route('activate-user', $user->id) }}" class="btn btn-success">Activate</a>
-                                @else
+                                @if ($user->situation == 0)
                                     <a href="{{ route('deactivate-user', $user->id) }}" class="btn btn-danger">Deactivate</a>
+                                @else
+                                    
+                                    <a href="{{ route('activate-user', $user->id) }}" class="btn btn-success">Activate</a>
                                 @endif
                             </td>
                             <td>{{ $user->situation }}</td>
