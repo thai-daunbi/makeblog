@@ -18,7 +18,7 @@ class ProfileController extends Controller
     public function index()
     {
         $users = User::all()->each(function ($user) {
-            if (!$user->email_verified || $user->deactivated) {
+            if (!$user->email_verified || $user->situation) {
                 $user->situation = '비활성화';
             } else {
                 $user->situation = '활성화';
@@ -28,23 +28,23 @@ class ProfileController extends Controller
         return view('settings', ['users' => $users]);
     }
 
-    public function editUser()
+    public function editUser($id)
     {
-        $user = \Auth::user();
+        $user = User::findOrFail($id);
         return view('users.edit',compact('user'));
     }
 
     public function deactivateUser($id)
     {
         $user = User::findOrFail($id);
-        $user->update(['deactivated' => 1, 'email_verified_at' => NULL]);
+        $user->update(['situation' => 1, 'email_verified_at' => NULL]);
         return redirect()->back()->with('message', '사용자 계정이 비활성화되고 이메일 인증이 취소었습니다.');
     }
 
     public function activateUser($id)
     {
         $user = User::findOrFail($id);
-        $user->deactivated = 0; // Set the account to active
+        $user->situation = 0; // Set the account to active
         $user->email_at = now(); // Set the email verification date to now
         $user->save();
 
@@ -53,19 +53,29 @@ class ProfileController extends Controller
     }
 
     public function accountInfoStore(Request $request)
-    {
-        $request->validateWithBag('account', [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', ':255', 'unique:users,email,'.\Auth::user()->id],
-        ]);
-        $user = \Auth::user()->update($request->except(['_token']));
-        if ($user) {
- $message = "Account updated successfully.";
-        } else {
-            $message = "Error while saving. Please try again.";
-        }
-        return redirect()->route('edit-user')->with('account_message', $message);
+{
+    $user = \Auth::user();
+
+    if (!$user) {
+        return redirect()->route('login')->with('error', 'Please log in first.');
     }
+
+    $request->validateWithBag('account', [
+        'name' => ['required', 'string', 'max:255'],
+        'email' => ['required', 'string', 'email', ':255', 'unique:users,email,' . $user->id],
+    ]);
+
+    $updateSuccess = $user->update($request->except(['_token']));
+
+    if ($updateSuccess) {
+        $message = "Account updated successfully.";
+    } else {
+        $message = "Error while saving. Please try again.";
+    }
+
+    return redirect()->route('edit-user', [$user->id])->with('account_message', $message);
+}
+
 
     public function changePasswordStore(Request $request)
     {
@@ -91,6 +101,6 @@ class ProfileController extends Controller
         } else {
             $message = "Error while saving. Please try again.";
         }
-        return redirect()->route('edit-user')->with('password_message', $message);
+        return redirect()->route('edit-user', [\Auth::user()->id])->with('password_message', $message);
     }
 }

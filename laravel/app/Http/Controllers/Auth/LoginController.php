@@ -47,7 +47,7 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
             $user = User::where('email', $request->email)->first();
-            if ($user->deactivated) {
+            if ($user->situation) {
                 Auth::logout();
                 return back()->withErrors(['email' => '이 이메일은 사용할 수 없습니다']);
             } else {
