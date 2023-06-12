@@ -44,18 +44,17 @@ class LoginController extends Controller
     public function authenticate(Request $request)
     {
         $credentials = $request->only('email', 'password');
+        $user = User::where('email', $request->email)->first();
 
-        if (Auth::attempt($credentials)) {
-            $user = User::where('email', $request->email)->first();
-            if ($user->situation) {
-                Auth::logout();
-                return back()->withErrors(['email' => '이 이메일은 사용할 수 없습니다']);
-            } else {
-                return redirect()->intended('dashboard');
-            }
+        if ($user->situation == 1) {
+            return back()->withErrors(['email' => '이 이메일은 사용할 수 없습니다']);
         }
+
+        
 
         return back()->withErrors(['email' => '이 이메일 주소로 가입된 사용자가 없거나 비밀번호가 틀렸습니다. 확인 후 다시 시도해주세요']);
     }
+
+
 
 }

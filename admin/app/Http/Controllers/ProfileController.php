@@ -18,7 +18,7 @@ class ProfileController extends Controller
     public function index()
     {
         $users = User::all()->each(function ($user) {
-            if (!$user->email_verified || $user->situation) {
+            if ($user->situation == 0) {
                 $user->situation = '활성화';
             } else {
                 $user->situation = '비활성화';
@@ -37,7 +37,10 @@ class ProfileController extends Controller
     public function deactivateUser($id)
     {
         $user = User::findOrFail($id);
-        $user->update(['situation' => 1, 'email_verified_at' => NULL]);
+        $user->situation = 1; // Set the account to active
+        $user->email_verified_at = NULL;
+        // $user->update(['situation' => 1, 'email_verified_at' => NULL]);
+        $user->save();
         return redirect()->back()->with('message', '사용자 계정이 비활성화되고 이메일 인증이 취소었습니다.');
     }
 
@@ -48,8 +51,8 @@ class ProfileController extends Controller
         $user->email_verified_at = now(); // Set the email verification date to now
         $user->save();
 
-        return redirect()->route('admin-settings')
-            ->with('user-activated', "User (ID: {$id}) has been 활성화되고 이메일 인증이 완료되었습니다.");
+        return redirect()->back()
+        ->with('user-activated', "User (ID: {$id}) has been 활성화되고 이메일 인증이 완료되었습니다.");
     }
 
     public function accountInfoStore(Request $request)

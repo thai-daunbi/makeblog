@@ -31,7 +31,7 @@
                             <td>{{ $user->email }}</td>
                             <td>
                                 <a href="{{ route('edit-user', $user->id) }}" class="btn btn-warning">Edit</a>
-                                @if ($user->situation == 0)
+                                @if ($user->situation == "활성화")
                                     <a href="{{ route('deactivate-user', $user->id) }}" class="btn btn-danger">Deactivate</a>
                                 @else
                                     

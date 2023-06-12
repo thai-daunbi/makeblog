@@ -39,7 +39,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('admin/settings', [App\Http\Controllers\ProfileController::class, 'settings']);
 });
 
-Route::get('/admin/settings', [App\Http\Controllers\ProfileController::class, 'index']);
+Route::get('/admin/settings', [App\Http\Controllers\ProfileController::class, 'index'])->name('settings');
 //edit
 Route::get('/admin/settings/edit-user/{id}', [App\Http\Controllers\ProfileController::class, 'editUser'])->name('edit-user');
 Route::post('edit-account-info',  [App\Http\Controllers\ProfileController::class,'accountInfoStore'])->name('admin.account.info.store');
