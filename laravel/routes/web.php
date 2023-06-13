@@ -11,6 +11,9 @@ Route::get('/', function () {
 });
 
 Auth::routes();
+// routes/web.php
+
+Route::post('/login', [App\Http\Controllers\Auth\LoginController::class, 'authenticate'])->name('login');
 
 Route::middleware(['auth'])->group(function () {
     // Dashboard
