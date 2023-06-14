@@ -44,17 +44,13 @@ class PostlistController extends Controller
 
     }
 
-    public function updateVisibility($postId)
+    public function toggleVisibility($id)
     {
-        // "Post"라는 Eloquent 모델을 가정합니다.
-        $post = PostList::findOrFail($postId);
+        $posts = PostList::findOrFail($id);
+        $posts->is_public = !$posts->is_public;;
+        $posts->save();
+        return redirect()->back();
 
-        // 현재 값에 따라 가시성을 토글합니다.
-        $post->is_public = !$post->is_public;
-        $post->save();
-
-        // 필요한 경우 응답을 반환합니다.
-        return response()->json(['success' => true]);
     }
 
 

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->unsignedBigInteger('like')->default(0);
             $table->unsignedBigInteger('dislike')->default(0); 
+            $table->boolean('is_public')->default(true); 
             $table->timestamps();
         });
     }

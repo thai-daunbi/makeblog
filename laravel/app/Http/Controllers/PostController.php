@@ -76,6 +76,12 @@ class PostController extends Controller
         // view show page with post data
         // echo "<pre>"; print_r ($post); echo "</pre>";
         // exit;
+        $post = Post::findOrFail($post->id);
+
+    // 접근 제한
+        if (!$post->is_public) {
+            return abort(403, 'Unauthorized action.');
+        }
         return view('posts.show')->with('post', $post);
     }
 

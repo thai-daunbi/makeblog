@@ -26,7 +26,8 @@ class HomeController extends Controller
     public function index()
     {
         // get all posts to list them for the user
-        $posts = Post::all();
+        $posts = Post::where('is_public', 1)->get();
+
 
         // view home page with all posts from database.
         return view('home')->with('posts', $posts);
