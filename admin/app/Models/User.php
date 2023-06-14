@@ -44,7 +44,7 @@ class User extends Authenticatable
     ];
 
     protected $attributes = [
-        'situation' => 0,
+        'status' => 0,
         //...
     ];
     

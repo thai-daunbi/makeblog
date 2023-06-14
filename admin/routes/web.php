@@ -45,7 +45,7 @@ Route::get('/admin/settings', [App\Http\Controllers\ProfileController::class, 'i
 Route::get('/admin/settings/edit-user/{id}', [App\Http\Controllers\ProfileController::class, 'editUser'])->name('edit-user');
 Route::post('edit-account-info',  [App\Http\Controllers\ProfileController::class,'accountInfoStore'])->name('admin.account.info.store');
 Route::post('change-password',  [App\Http\Controllers\ProfileController::class,'changePasswordStore'])->name('admin.account.password.store');
-//profile-situation
+//profile-status
 Route::get('/deactivate-user/{id}', [App\Http\Controllers\ProfileController::class, 'deactivateUser'])->name('deactivate-user');
 Route::get('/activate-user/{id}', [App\Http\Controllers\ProfileController::class, 'activateUser'])->name('activate-user');
 

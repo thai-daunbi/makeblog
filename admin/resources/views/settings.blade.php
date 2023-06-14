@@ -20,7 +20,7 @@
                             <th>Name</th>
                             <th>Email</th>
                             <th>Actions</th>
-                            <th>situation</th>
+                            <th>status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -31,14 +31,14 @@
                             <td>{{ $user->email }}</td>
                             <td>
                                 <a href="{{ route('edit-user', $user->id) }}" class="btn btn-warning">Edit</a>
-                                @if ($user->situation == "활성화")
+                                @if ($user->status == "활성화")
                                     <a href="{{ route('deactivate-user', $user->id) }}" class="btn btn-danger">Deactivate</a>
                                 @else
                                     
                                     <a href="{{ route('activate-user', $user->id) }}" class="btn btn-success">Activate</a>
                                 @endif
                             </td>
-                            <td>{{ $user->situation }}</td>
+                            <td>{{ $user->status }}</td>
 
                         </tr>
                         @endforeach

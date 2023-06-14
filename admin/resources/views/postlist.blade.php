@@ -20,7 +20,7 @@
                         <th>User Id</th>
                         <th>Page Content</th>
                         <th>Actions</th>
-                        <th>situation</th>
+                        <th>status</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -39,7 +39,7 @@
                                     <a href="{{ route('post.toggle-visibility', $item->id) }}" class="btn btn-primary">공개</a>
                                 @endif
                             </td>
-                            <td class="situation">
+                            <td class="status">
                                 {{ $item->is_public ? '공개' : '비공개' }}
                             </td>
                         </tr>

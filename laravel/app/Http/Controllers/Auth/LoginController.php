@@ -46,7 +46,7 @@ class LoginController extends Controller
     $credentials = $request->only('email', 'password');
     $user = User::where('email', $request->email)->first();
 
-    if (is_null($user) || $user->situation == 1) {
+    if (is_null($user) || $user->status == 1) {
         return back()->withErrors(['email' => '이 이메일은 사용할 수 없습니다']);
     }
 
